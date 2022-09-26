@@ -1,2 +1,5 @@
-# multisite-author-bio
-Allows you to seamlessly add user bio variations for WordPress
+# Multisite Author Bio
+
+Multisite Author Bio allows you to add unique user biographical information for each Multisite instance.
+
+Plugin needs to be network activated.
