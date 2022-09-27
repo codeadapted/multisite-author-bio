@@ -52,7 +52,9 @@ Navigate to a user's edit page and scroll to the bottom. You will see the Multis
 
 = How to uninstall the plugin? =
 
-Deactivate and delete the plugin. Please keep in mind that the options added to the database are not removed on uninstall by default in order to preserve data. If you would like to clear all data added by the plugin you can go to the plugin's settings page and check `Clear translation data on uninstall`.
+Deactivate and delete the plugin.
+
+Please keep in mind that the options added to the database are not removed on uninstall by default in order to preserve data. If you would like to clear all data added by the plugin you can go to the plugin's settings page and check `Clear translation data on uninstall`.
 
 == Screenshots ==
 1. Go to the Network **Plugins** page.
