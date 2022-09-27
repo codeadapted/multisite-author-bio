@@ -20,13 +20,13 @@ For instance, let's say you have 10 sites in you network and you are currently i
 
 Once, installed and activated the plugin is ready to rock and roll. No additional configuration is necessary.
 
-*Important*
+###Important
 
 Although installing and activating the plugin won't affect a normal website, Multisite Author Bio is meant to work on a Multisite network and, thus, does not benefit you unless you have multisite enabled.
 
 Please keep in mind that the options added to the database are not removed on uninstall by default in order to preserve data. If you would like to clear all data added by the plugin you can go to the plugin's settings page and check `Clear translation data on uninstall`.
 
-*For Developers*
+###For Developers
 
 The data is stored in the main network's site database to limit the amount of data created by the plugin.
 - `mab_clear_data` is stored in `wp_options` and determines whether the plugin's data should be removed on uninstall.
