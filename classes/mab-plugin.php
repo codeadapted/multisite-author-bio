@@ -40,7 +40,7 @@ class MAB_Plugin {
 	 */
 	public static function uninstall() {
 
-		if( get_option( 'mab_clear_data' ) ) {
+		if( sanitize_text_field( get_option( 'mab_clear_data' ) ) ) {
 			self::mab_clear_data();
 			delete_option( 'mab_clear_data' );
 		}
@@ -99,7 +99,7 @@ class MAB_Plugin {
 	 * @return  void
 	 */
 	 function mab_save_admin_page() {
-		$clear_data = $_POST['clear_data'];
+		$clear_data = sanitize_text_field( $_POST['clear_data'] );
 		$main_site_id = get_main_site_id();
 
 		switch_to_blog( $main_site_id );
@@ -112,7 +112,7 @@ class MAB_Plugin {
 
 		restore_current_blog();
 
-		wp_send_json_success( 'User bio variations set to be cleared on uninstall' );
+		wp_send_json_success( __( 'User bio variations set to be cleared on uninstall', 'mab' ) );
 	 }
 
 	/**

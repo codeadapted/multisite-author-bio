@@ -24,15 +24,17 @@ class MAB_Frontend {
 	**/
 	public function mab_author_description_filter( $value ) {
 
+		$value = sanitize_text_field( $value );
+
 		$site_slug = explode( '.', home_url() )[0];
-		$site_slug = str_replace( array( 'http://', 'https://' ), '', $site_slug );
+		$site_slug = str_replace( array( 'http://', 'https://' ), '', sanitize_text_field( $site_slug ) );
 		$post_id = get_the_ID();
 		$user_id = get_post_field( 'post_author', $post_id );
-		$override_description = get_user_meta( $user_id, 'mab_profile_bio_' . $site_slug, true );
-		if( $override_description ) {
-			return $override_description;
+		$override_description = get_user_meta( $user_id, 'mab_profile_bio_' . sanitize_text_field( $site_slug ), true );
+		if( isset( $override_description ) && !empty( $override_description ) ) {
+			return esc_textarea( $override_description );
 		} else {
-			return $value;
+			return esc_textarea( $value );
 		}
 
 	}

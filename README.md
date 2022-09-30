@@ -4,7 +4,7 @@ Contributors: CodeAdapted
 Tags: multisite, multisite author bio, author bio variations, multisite user bio, user bio variations, author bio, user description
 Requires at least: 5.0 or higher
 Tested up to: 6.0.2
-Stable tag: 1.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
