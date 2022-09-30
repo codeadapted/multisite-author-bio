@@ -119,7 +119,9 @@ class MAB_UserSetup {
 				<div class="mab-form-wrapper">
 					<select class="mab-select-bio-variation" name="mabSelectBioVariation">
 						<option value=""><?php esc_html_e( 'Select Site', 'mab' ); ?></option>
-						<?php echo $variations; ?>
+						<?php if( isset( $variations ) && !empty( $variations ) ) {
+							echo $variations;
+						} ?>
 					</select>
 					<p class="mab-bio-variation-label hidden"><em><?php esc_html_e( 'Below is the user bio variation for the site selected above.', 'mab' ); ?></em></p>
 					<textarea rows="4" cols="60" placeholder="<?php esc_html_e( 'Insert profile bio variation', 'mab' ); ?>" class="mab-bio-variation-text hidden" name="mabBioVariation" value="" id="mab-bio-variation-text"></textarea>
