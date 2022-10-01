@@ -113,28 +113,28 @@ class MAB_UserSetup {
 		if( function_exists('is_multisite') && is_multisite() ) {
 		?>
 
-			<h3><?php esc_html_e( 'Multisite Author Bio', 'mab' ); ?></h3>
-			<p><em><?php esc_html_e( 'Select the network site you wish to update/view the user bio for.', 'mab' ); ?></em></p>
+			<h3><?php esc_html_e( 'Multisite Author Bio', 'multisite-author-bio' ); ?></h3>
+			<p><em><?php esc_html_e( 'Select the network site you wish to update/view the user bio for.', 'multisite-author-bio' ); ?></em></p>
 			<div class="mab-form-container" data-user="<?php esc_html_e( $user_id ); ?>">
 				<div class="mab-form-wrapper">
 					<select class="mab-select-bio-variation" name="mabSelectBioVariation">
-						<option value=""><?php esc_html_e( 'Select Site', 'mab' ); ?></option>
+						<option value=""><?php esc_html_e( 'Select Site', 'multisite-author-bio' ); ?></option>
 						<?php if( isset( $variations ) && !empty( $variations ) ) {
-							echo $variations;
+							esc_html_e( print_r( $variations ) );
 						} ?>
 					</select>
-					<p class="mab-bio-variation-label hidden"><em><?php esc_html_e( 'Below is the user bio variation for the site selected above.', 'mab' ); ?></em></p>
-					<textarea rows="4" cols="60" placeholder="<?php esc_html_e( 'Insert profile bio variation', 'mab' ); ?>" class="mab-bio-variation-text hidden" name="mabBioVariation" value="" id="mab-bio-variation-text"></textarea>
+					<p class="mab-bio-variation-label hidden"><em><?php esc_html_e( 'Below is the user bio variation for the site selected above.', 'multisite-author-bio' ); ?></em></p>
+					<textarea rows="4" cols="60" placeholder="<?php esc_html_e( 'Insert profile bio variation', 'multisite-author-bio' ); ?>" class="mab-bio-variation-text hidden" name="mabBioVariation" value="" id="mab-bio-variation-text"></textarea>
 				</div>
 			</div>
 
 		<?php
 		} else { ?>
 
-			<h3><?php esc_html_e( 'Translate Bio', 'mab' ); ?></h3>
+			<h3><?php esc_html_e( 'Translate Bio', 'multisite-author-bio' ); ?></h3>
 			<div class="mab-form-container" data-user="<?php esc_html_e( $user_id ); ?>">
 				<div class="mab-form-wrapper">
-					<?php esc_html_e( 'Multisite is not enabled.', 'mab' ); ?>
+					<?php esc_html_e( 'Multisite is not enabled.', 'multisite-author-bio' ); ?>
 				</div>
 			</div>
 

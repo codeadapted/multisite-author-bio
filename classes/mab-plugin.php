@@ -112,7 +112,7 @@ class MAB_Plugin {
 
 		restore_current_blog();
 
-		wp_send_json_success( __( 'User bio variations set to be cleared on uninstall', 'mab' ) );
+		wp_send_json_success( __( 'User bio variations set to be cleared on uninstall', 'multisite-author-bio' ) );
 	 }
 
 	/**
@@ -162,8 +162,8 @@ class MAB_Plugin {
 	public function admin_page() {
 		add_submenu_page(
 			'options-general.php',
-			__( 'Multisite Author Bio', 'mab' ),
-			__( 'Multisite Author Bio', 'mab' ),
+			__( 'Multisite Author Bio', 'multisite-author-bio' ),
+			__( 'Multisite Author Bio', 'multisite-author-bio' ),
 			'administrator',
 			MAB_DIRNAME,
 			array( $this, 'admin_page_settings' ),
