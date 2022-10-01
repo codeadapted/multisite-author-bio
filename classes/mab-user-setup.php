@@ -131,7 +131,7 @@ class MAB_UserSetup {
 		<?php
 		} else { ?>
 
-			<h3><?php esc_html_e( 'Translate Bio', 'multisite-author-bio' ); ?></h3>
+			<h3><?php esc_html_e( 'Multisite Author Bio', 'multisite-author-bio' ); ?></h3>
 			<div class="mab-form-container" data-user="<?php esc_html_e( $user_id ); ?>">
 				<div class="mab-form-wrapper">
 					<?php esc_html_e( 'Multisite is not enabled.', 'multisite-author-bio' ); ?>

@@ -1,0 +1,68 @@
+# Copyright (C) 2022 CodeAdapted
+# This file is distributed under the GPL2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Multisite Author Bio 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/multisite-author-bio\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-10-01T20:04:20+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: multisite-author-bio\n"
+
+#. Plugin Name of the plugin
+#: admin/view.php:22
+#: classes/mab-plugin.php:165
+#: classes/mab-plugin.php:166
+#: classes/mab-user-setup.php:116
+#: classes/mab-user-setup.php:134
+msgid "Multisite Author Bio"
+msgstr "Multisite Author Bio"
+
+#. Description of the plugin
+msgid "Allow user bio to be translated on multisite instance"
+msgstr "Permite la creación de variantes de la información biográfica de usuarios en una red multisite"
+
+#. Author of the plugin
+msgid "CodeAdapted"
+msgstr "CodeAdapted"
+
+#. Author URI of the plugin
+msgid "https://codeadapted.com"
+msgstr "https://codeadapted.com"
+
+#: admin/view.php:30
+msgid "Clear translation data on uninstall"
+msgstr "Borrar datos guardados por el plugin"
+
+#: admin/view.php:33
+msgid "Enabling this option will delete all the user meta data added by the plugin. It is highly advised to leave this unchecked if you plan to continue using this plugin."
+msgstr "Activando esta opción eliminará todos los datos guardados por el plugin al desinstalarlo. Esto incluye las variantes de la información biográfica asociadas con los usuarios. Le sugerimos dejar esta opción desactivada si planea continuar usando el plugin en el futuro para no perder sus datos."
+
+#: classes/mab-plugin.php:115
+msgid "User bio variations set to be cleared on uninstall"
+msgstr "Los datos de los usuarios se eliminarán con la desinstalación del plugin."
+
+#: classes/mab-user-setup.php:117
+msgid "Select the network site you wish to update/view the user bio for."
+msgstr "Seleccione el sitio web del que desee actualizar o ver la información biográfica del usuario."
+
+#: classes/mab-user-setup.php:121
+msgid "Select Site"
+msgstr "Seleccione el sitio web"
+
+#: classes/mab-user-setup.php:126
+msgid "Below is the user bio variation for the site selected above."
+msgstr "Abajo encontrará la variante de la información biográfica del usuario. El contenido depende del sitio seleccionado arriba."
+
+#: classes/mab-user-setup.php:127
+msgid "Insert profile bio variation"
+msgstr "Añade una variante de la información biográfica"
+
+#: classes/mab-user-setup.php:137
+msgid "Multisite is not enabled."
+msgstr "Aún no se ha creado una red multisite."

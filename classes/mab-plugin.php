@@ -64,6 +64,7 @@ class MAB_Plugin {
 			add_action( 'admin_init', array( $this, 'admin_init' ) );
 			add_action( 'admin_menu', array( $this, 'admin_page' ) );
 			add_action( 'wp_ajax_mab_save_admin_page', array( $this, 'mab_save_admin_page' ) );
+			add_action( 'init',  array( $this, 'mab_load_plugin_textdomain' ) );
 		}
 
 	}
@@ -210,6 +211,18 @@ class MAB_Plugin {
 	 */
 	public function get_admin_url() {
 		return admin_url( 'options-general.php?page=' . MAB_BASENAME );
+	}
+
+	/**
+	 * mab_load_plugin_textdomain
+	 *
+	 * Add settings link on plugin page
+	 *
+	 * @param   void
+	 * @return  string the translation .mo file path
+	 */
+	public function mab_load_plugin_textdomain() {
+		load_plugin_textdomain( 'multisite-author-bio', false, MAB_BASENAME . '/languages' );
 	}
 
 }
