@@ -1,7 +1,7 @@
 === Multisite Author Bio ===
 
 Contributors: CodeAdapted
-Tags: multisite, multisite author bio, author bio variations, multisite user bio, user bio variations, author bio, user description
+Tags: author, author bio, author description, multisite, multisite author
 Requires at least: 5.0 or higher
 Tested up to: 6.0.2
 Stable tag: 1.0.0
