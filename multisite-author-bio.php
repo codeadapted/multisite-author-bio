@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:  Multisite Author Bio
- * Description:  Allow user bio to be translated on multisite instance
+ * Description:  Allows you to add unique user biographical information for each Multisite instance.
  * Version:      1.0.0
  * Author:       CodeAdapted
  * Author URI:   https://codeadapted.com
