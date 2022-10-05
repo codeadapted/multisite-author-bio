@@ -2,6 +2,7 @@
 /**
  * Plugin Name:  Multisite Author Bio
  * Description:  Allow user bio to be translated on multisite instance
+ * Tags:         author,author bio,author description,multisite,multisite author,multisite author bio,multisite author description
  * Version:      1.0.0
  * Author:       CodeAdapted
  * Author URI:   https://codeadapted.com
