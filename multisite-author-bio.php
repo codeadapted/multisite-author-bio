@@ -2,7 +2,7 @@
 /**
  * Plugin Name:  Multisite Author Bio
  * Description:  Allows you to add unique user biographical information for each Multisite instance.
- * Version:      1.0.0
+ * Version:      1.0.1
  * Author:       CodeAdapted
  * Author URI:   https://codeadapted.com
  * License:      GPL2 or later
