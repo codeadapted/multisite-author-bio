@@ -5,8 +5,10 @@ if( !current_user_can( 'manage_options' ) ) {
 	wp_die(__('You do not have sufficient permissions to access this page.'));
 }
 
-$main_site_id = get_main_site_id();
-switch_to_blog( $main_site_id );
+if( function_exists('is_multisite') && is_multisite() ) {
+	$main_site_id = get_main_site_id();
+	switch_to_blog( $main_site_id );
+}
 
 if( get_option( 'mab_clear_data' ) ) {
 	$clear_data = true;
@@ -14,7 +16,9 @@ if( get_option( 'mab_clear_data' ) ) {
 	$clear_data = false;
 }
 
-restore_current_blog();
+if( function_exists('is_multisite') && is_multisite() ) {
+	restore_current_blog();
+}
 
 ?>
 <div id="admin-view">
