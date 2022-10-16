@@ -81,7 +81,9 @@ class MAB_Plugin {
 
 		$main_site_id = get_main_site_id();
 
-		switch_to_blog( $main_site_id );
+		if( function_exists('is_multisite') && is_multisite() ) {
+			switch_to_blog( $main_site_id );
+		}
 
 		global $wpdb;
 
@@ -103,7 +105,9 @@ class MAB_Plugin {
 		$clear_data = sanitize_text_field( $_POST['clear_data'] );
 		$main_site_id = get_main_site_id();
 
-		switch_to_blog( $main_site_id );
+		if( function_exists('is_multisite') && is_multisite() ) {
+			switch_to_blog( $main_site_id );
+		}
 
 		if( $clear_data ) {
 			update_option( 'mab_clear_data', true );
