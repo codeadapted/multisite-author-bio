@@ -20,6 +20,8 @@ if( function_exists('is_multisite') && is_multisite() ) {
 	restore_current_blog();
 }
 
+mab()->plugin()->mab_load_plugin_textdomain();
+
 ?>
 <div id="admin-view">
 	<form id="mabForm" class="admin-view-form">

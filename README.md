@@ -74,3 +74,5 @@ Please keep in mind that the options added to the database are not removed on un
 * Plugin released.
 = 1.0.1 =
 * Fix for non-multisite installations.
+= 1.0.2 =
+* Fix for multisite translation. Add ES translations.

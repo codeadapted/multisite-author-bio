@@ -1,18 +1,19 @@
 <?php
 /**
- * Plugin Name:  Multisite Author Bio
- * Description:  Allows you to add unique user biographical information for each Multisite instance.
- * Version:      1.0.1
- * Author:       CodeAdapted
- * Author URI:   https://codeadapted.com
- * License:      GPL2 or later
- * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:  multisite-author-bio
- *
- * @package     MultisiteAuthorBio
- * @author      CodeAdapted
- * @copyright   Copyright (c) 2022, CodeAdapted LLC
- */
+* Plugin Name:  Multisite Author Bio
+* Description:  Allows you to add unique user biographical information for each Multisite instance.
+* Version:      1.0.2
+* Author:       CodeAdapted
+* Author URI:   https://codeadapted.com
+* License:      GPL2 or later
+* License URI:  https://www.gnu.org/licenses/gpl-2.0.html
+* Text Domain:  multisite-author-bio
+* Domain Path: /languages/
+*
+* @package     MultisiteAuthorBio
+* @author      CodeAdapted
+* @copyright   Copyright (c) 2022, CodeAdapted LLC
+*/
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
@@ -27,7 +28,7 @@ if ( ! class_exists( 'MultisiteAuthorBio' ) ) :
 	class MultisiteAuthorBio {
 
 		/** @var string The plugin version number. */
-		var $version = '1.0.0';
+		var $version = '1.0.2';
 
 		/** @var string Shortcuts. */
 		var $plugin;

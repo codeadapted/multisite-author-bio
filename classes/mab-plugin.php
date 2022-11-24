@@ -64,7 +64,6 @@ class MAB_Plugin {
 			add_action( 'admin_init', array( $this, 'admin_init' ) );
 			add_action( 'admin_menu', array( $this, 'admin_page' ) );
 			add_action( 'wp_ajax_mab_save_admin_page', array( $this, 'mab_save_admin_page' ) );
-			add_action( 'init',  array( $this, 'mab_load_plugin_textdomain' ) );
 		}
 
 	}
@@ -102,6 +101,9 @@ class MAB_Plugin {
 	 * @return  void
 	 */
 	 function mab_save_admin_page() {
+
+		mab()->plugin()->mab_load_plugin_textdomain();
+
 		$clear_data = sanitize_text_field( $_POST['clear_data'] );
 		$main_site_id = get_main_site_id();
 
@@ -226,7 +228,7 @@ class MAB_Plugin {
 	 * @return  string the translation .mo file path
 	 */
 	public function mab_load_plugin_textdomain() {
-		load_plugin_textdomain( 'multisite-author-bio', false, MAB_BASENAME . '/languages' );
+		load_plugin_textdomain( 'multisite-author-bio', false, MAB_BASENAME . '/languages/' );
 	}
 
 }

@@ -108,6 +108,8 @@ class MAB_UserSetup {
 	**/
 	public function mab_custom_user_profile_fields( $user ) {
 
+		mab()->plugin()->mab_load_plugin_textdomain();
+
 		$user_id = sanitize_user_field( 'ID', $user->ID, $user->ID, 'raw' );
 		$variations = $this->mab_get_sites();
 		if( function_exists('is_multisite') && is_multisite() ) {
