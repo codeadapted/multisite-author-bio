@@ -38,6 +38,5 @@ class MAB_Frontend {
 		}
 
 	}
-	
 
 }
