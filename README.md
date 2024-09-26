@@ -1,62 +1,50 @@
 === Multisite Author Bio ===
-
 Contributors: CodeAdapted
 Tags: author, author bio, author description, multisite, multisite author
-Requires at least: 5.0 or higher
-Tested up to: 6.1.1
-Stable tag: 1.0.2
+Requires at least: 5.0
+Tested up to: 6.2.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Multisite Author Bio allows you to add unique user biographical information for each Multisite instance.
+Multisite Author Bio allows you to easily manage unique user biographical information across each site in a WordPress Multisite network.
 
 == Description ==
 
-Although there are a few other plugins out there that allow you to create author bio variations for each multisite instance, none offer the simplicity that Multisite Author Bio does.
+Multisite Author Bio simplifies managing unique user biographical information across multiple sites in a WordPress Multisite network. This plugin allows administrators to update author bios from a single user edit page, streamlining the process of managing bio variations across different sites without having to switch between site dashboards.
 
-Gone are the days of having to manually switch between sites in your network to update or view the user's biographical information. With Multisite Author Bio you can view and update all of the different variations of the author bio from the same user edit page.
+= Features =
 
-For instance, let's say you have 10 sites in you network and you are currently in the `test.example.com` WP Admin and you want to create a variation of the author bio for a user on each site. Instead of having to open up a new window or tab to update the bio for each site you can do it all from the user's edit page from the `test.example.com` site. This saves time and saving time is always a plus.
-
-Once, installed and activated the plugin is ready to rock and roll. No additional configuration is necessary.
-
-### Important
-
-Although installing and activating the plugin won't affect a normal website, Multisite Author Bio is meant to work on a Multisite network and, thus, does not benefit you unless you have multisite enabled.
-
-Please keep in mind that the options added to the database are not removed on uninstall by default in order to preserve data. If you would like to clear all data added by the plugin you can go to the plugin's settings page and check `Clear translation data on uninstall`.
-
-### For Developers
-
-The data is stored in the main network's site database to limit the amount of data created by the plugin.
-- `mab_clear_data` is stored in `wp_options` and determines whether the plugin's data should be removed on uninstall.
-- `mab_profile_bio_[site_name]` is stored in `wp_usermeta` and is the author bio variant for `[site_name]`.
-
-Multisite Author Bio uses the to `get_the_author_user_description` filter to update the author bio for each network site. If an author bio variation is not present for a specific site it will use the default author biographical information from the main network site.
-
-
-Please visit the github repository on https://github.com/codeadapted/multisite-author-bio if you want to contribute, post a specific feature request or bug report.
+- **Centralized Bio Management**: View and edit author bio variations for all sites from one user profile page.
+- **No Site Switching**: Edit the author bio for multiple sites from a single location, without needing to switch between dashboards.
+- **Seamless Multisite Integration**: Works seamlessly within WordPress Multisite environments, allowing bio information to be site-specific.
+- **Data Retention Control**: Decide whether plugin data should be retained or deleted upon uninstallation via the data retention setting.
 
 == Installation ==
 
-1. Upload the plugin folder to your /wp-content/plugins/ folder or upload it through WordPress.
-2. Go to the Network **Plugins** page and activate the plugin.
+1. Download and unzip the plugin folder.
+2. Upload the `multisite-author-bio` directory to the `/wp-content/plugins/` directory.
+3. **Network Activate** the plugin from the Network Admin **Plugins** page.
+4. Once activated, you can manage author bios on any user profile page.
 
-== Frequently Asked Questions ==
+== Usage ==
 
-= How do I use this plugin? =
+= Manage Author Bio Variations =
+1. Navigate to any user’s **Edit Profile** page.
+2. Scroll down to the **Multisite Author Bio** section near the bottom of the page.
+3. The dropdown will display the list of sites in your network. Select a site to view or edit the author bio for that specific site.
+4. Enter or update the author bio in the provided field.
+5. Click **Update User** to save the changes.
+6. The updated bio will now appear on the selected site.
 
-Once, installed and activated the plugin is ready to rock and roll. No additional configuration is necessary.
-
-Navigate to a user's edit page and scroll to the bottom. You will see the Multisite Author Bio section near the bottom. The plugin will automatically select the option for the current site if you are not on the main network site.
-
-= How to uninstall the plugin? =
-
-Deactivate and delete the plugin.
-
-Please keep in mind that the options added to the database are not removed on uninstall by default in order to preserve data. If you would like to clear all data added by the plugin you can go to the plugin's settings page and check `Clear translation data on uninstall`.
+= Data Retention Setting =
+1. Go to **Settings > Multisite Author Bio** in the Network Admin dashboard.
+2. Enable or disable the **Clear Data on Uninstall** option:
+   - **Enabled**: All plugin-related data, including author bio variations, will be deleted when the plugin is uninstalled.
+   - **Disabled**: Data will be retained after uninstallation.
 
 == Screenshots ==
+
 1. Go to the Network **Plugins** page.
 2. Upload and install Multisite Author Bio.
 3. Network activate the plugin.
@@ -66,13 +54,38 @@ Please keep in mind that the options added to the database are not removed on un
 7. Click on the dropdown to select the site name you wish to update/view the author bio for.
 8. The textarea will appear with the author bio for the site selected. You can update this by clicking `Update User`.
 9. Updated author bio on another network site.
-10. If you want to remove the plugin and clear the database of all data associated with it go to `Settings > Mutlisite Auther Bio`.
+10. If you want to remove the plugin and clear the database of all data associated with it go to `Settings > Multisite Author Bio`.
 11. Check `Clear translation data on uninstall` and click `Save Changes`.
 
+== Frequently Asked Questions ==
+
+= How does this plugin work? =
+Once the plugin is network-activated, navigate to any user’s **Edit Profile** page and scroll to the **Multisite Author Bio** section. Use the dropdown to select a site, and then enter or update the bio for that site.
+
+= Can I uninstall the plugin without losing data? =
+Yes. By default, data is preserved when the plugin is uninstalled. However, you can choose to enable the **Clear Data on Uninstall** option in the plugin settings to remove all plugin-related data when the plugin is deleted.
+
+= Can this plugin work on a single-site WordPress installation? =
+No, this plugin is specifically built for WordPress Multisite environments. It will not provide functionality on a single-site installation.
+
 == Changelog ==
-= 1.0.0 =
-* Plugin released.
-= 1.0.1 =
-* Fix for non-multisite installations.
+
+= 1.0.3 =
+* Improved multisite bio handling and bug fixes.
+
 = 1.0.2 =
-* Fix for multisite translation. Add ES translations.
+* Added ES translations and fixed translation issues.
+
+= 1.0.1 =
+* Added support for non-multisite installations.
+
+= 1.0.0 =
+* Initial plugin release.
+
+== License ==
+
+This plugin is licensed under the GPLv2 or later. You can view the full license here: [GPLv2 License](http://www.gnu.org/licenses/gpl-2.0.html).
+
+== Credits ==
+
+* Developed by CodeAdapted.
