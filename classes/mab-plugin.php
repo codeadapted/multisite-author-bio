@@ -84,7 +84,7 @@ class MAB_Plugin {
 			add_filter( 'user_has_cap', array( $this, 'mab_force_network_activation' ), 10, 3 );
 
 			// Add a settings link to the plugin page
-			add_filter( 'plugin_action_links_' . MAB_BASENAME . '/multisite-author-bio.php', array( $this, 'mab_add_settings_link' ) );
+			add_filter( 'network_admin_plugin_action_links_' . MAB_BASENAME . '/multisite-author-bio.php', array( $this, 'mab_add_settings_link' ) );
 
 			// Initialize admin scripts and styles
 			add_action( 'admin_enqueue_scripts', array( $this, 'mab_enqueue_scripts' ) );
