@@ -148,6 +148,10 @@ class MAB_UserSetup {
 					</select>
 					<p class="mab-bio-variation-label hidden"><em><?php esc_html_e( 'Below is the user bio variation for the site selected above.', 'multisite-author-bio' ); ?></em></p>
 					<textarea rows="4" cols="60" placeholder="<?php esc_html_e( 'Insert profile bio variation', 'multisite-author-bio' ); ?>" class="mab-bio-variation-text hidden" name="mabBioVariation" id="mab-bio-variation-text"></textarea>
+					<?php
+						// Add a nonce field for security
+						wp_nonce_field( 'mab_nonce_action', 'mab_nonce' );
+					?>
 				</div>
 			</div>
 
@@ -179,15 +183,22 @@ class MAB_UserSetup {
 			return false;
 		}
 
-		// Nonce validation
-		check_ajax_referer( 'mab_nonce_action', 'mab_nonce' );
+		// Verify nonce for non-AJAX form submission
+		if ( ! isset( $_POST['mab_nonce'] ) || ! check_admin_referer( 'mab_nonce_action', 'mab_nonce' ) ) {
+			return false;
+		}
 
 		// Save the bio variation for the selected site
 		$bio_variation = isset( $_POST['mabSelectBioVariation'] ) ? sanitize_text_field( wp_unslash( $_POST['mabSelectBioVariation'] ) ) : '';
 		$bio_text = isset( $_POST['mabBioVariation'] ) ? sanitize_textarea_field( wp_unslash( $_POST['mabBioVariation'] ) ) : '';
 
-		// Update user meta with the bio variation for the selected site
-		update_user_meta( $user_id, 'mab_profile_bio_' . $bio_variation, $bio_text );
+		 // Check if bio variation is set to avoid empty meta keys
+		 if ( $bio_variation ) {
+
+			// Update user meta with the bio variation for the selected site
+			update_user_meta( $user_id, 'mab_profile_bio_' . $bio_variation, $bio_text );
+
+		}
 
 	}
 

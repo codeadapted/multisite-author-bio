@@ -1,7 +1,7 @@
 (function (window, document) {
 	'use strict';
 
-	async function getTranslatedBio( ajaxUrl, userId ) {
+	async function getTranslatedBio() {
 
 		// Ajax url and nonce
 		const ajaxUrl = mab_user_obj.ajax_url;
