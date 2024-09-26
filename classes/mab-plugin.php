@@ -23,7 +23,7 @@ class MAB_Plugin {
 		}
 
 		// Set mab_activated to true
-		update_option( 'mab_activated', true );
+		update_option( sanitize_key( 'mab_activated' ), true );
 
 	}
 
@@ -36,7 +36,7 @@ class MAB_Plugin {
 	public static function deactivate() {
 
 		// Remove mab_activated option upon deactivation
-		delete_option( 'mab_activated' );
+		delete_option( sanitize_key( 'mab_activated' ) );
 
 	}
 
@@ -49,13 +49,13 @@ class MAB_Plugin {
 	public static function uninstall() {
 
 		// Check if mab_clear_data option is enabled and clear the data
-		if( sanitize_text_field( get_option( 'mab_clear_data' ) ) ) {
+		if( sanitize_text_field( get_option( sanitize_key( 'mab_clear_data' ) ) ) ) {
 
 			// Clear all data related to the plugin
 			self::mab_clear_data();
 
 			// Delete the mab_clear_data option
-			delete_option( 'mab_clear_data' );
+			delete_option( sanitize_key( 'mab_clear_data' ) );
 
 		}
 
@@ -83,11 +83,11 @@ class MAB_Plugin {
 			// Add a settings link to the plugin page
 			add_filter( 'plugin_action_links_' . MAB_BASENAME . '/multisite-author-bio.php', array( $this, 'mab_add_settings_link' ) );
 
-			// Initialize admin settings
-			add_action( 'admin_init', array( $this, 'mab_admin_init' ) );
+			// Initialize admin scripts and styles
+			add_action( 'admin_enqueue_scripts', array( $this, 'mab_enqueue_scripts' ) );
 
 			// Add the admin page menu
-			add_action( 'admin_menu', array( $this, 'mab_admin_page' ) );
+			add_action( 'network_admin_menu', array( $this, 'mab_admin_page' ) );
 
 			// Handle AJAX requests for saving the admin page settings
 			add_action( 'wp_ajax_mab_save_admin_page', array( $this, 'mab_save_admin_page' ) );
@@ -108,7 +108,7 @@ class MAB_Plugin {
 		$main_site_id = get_main_site_id();
 
 		// Switch to main site if multisite
-		if ( function_exists('is_multisite') && is_multisite() && get_current_blog_id() != $main_site_id ) {
+		if ( function_exists( 'is_multisite' ) && is_multisite() && get_current_blog_id() != $main_site_id ) {
 			switch_to_blog( $main_site_id );
 		}
 
@@ -130,16 +130,14 @@ class MAB_Plugin {
 	 */
 	public function mab_save_admin_page() {
 
-		// Validate the nonce
-        if ( ! $this->validate_nonce() ) {
-            return false;
-        }
+		// Nonce validation
+		check_ajax_referer( 'mab_nonce_action', 'mab_nonce' );
 
 		// Load text domain for translations
 		$this->mab_load_plugin_textdomain();
 
 		// Check if clear data set
-		$clear_data = isset( $_POST['clear_data'] ) ? sanitize_text_field( wp_slash( $_POST['clear_data'] ) ) : 0;
+		$clear_data = isset( $_POST['clear_data'] ) ? sanitize_text_field( wp_unslash( $_POST['clear_data'] ) ) : 0;
 
 		// Get main site id
 		$main_site_id = get_main_site_id();
@@ -196,29 +194,29 @@ class MAB_Plugin {
 	 * @param   void
 	 * @return  void
 	 */
-	public function mab_admin_init() {
+	public function mab_enqueue_scripts() {
 
 		// Only enqueue scripts and styles on the settings page
-        if ( strpos( $this->mab_get_current_admin_url(), $this->mab_get_admin_url() ) !== false ) {
-
-			// Enqueue custom stylesheet for user setup
-			wp_enqueue_style( 'mab_stylesheet', MAB_PLUGIN_DIR . 'admin/css/admin.css', array(), '1.0.0' );
-
-			// Create a nonce for secure AJAX requests
-			$nonce = wp_create_nonce( 'mab_nonce_action' );
-
-			// Enqueue the main admin script (dependent on jQuery)
-			wp_enqueue_script( 'mab_script', MAB_PLUGIN_DIR . 'admin/js/admin.js', array( 'jquery' ), '1.0.0', true );
-
-			// Localize the script to pass AJAX URL and nonce to the JavaScript file
-			wp_localize_script( 'mab_script', 'mab_obj',
-				array(
-					'ajax_url' => admin_url( 'admin-ajax.php' ), // The admin AJAX URL
-					'mab_nonce' => $nonce // The nonce for AJAX security
-				)
-			);
-
+		if ( strpos( $this->mab_get_current_admin_url(), $this->mab_get_admin_url() ) === false ) {
+			return;
 		}
+
+		// Enqueue custom stylesheet for user setup
+		wp_enqueue_style( 'mab_stylesheet', MAB_PLUGIN_DIR . 'admin/css/admin.css', array(), '1.0.0' );
+
+		// Create a nonce for secure AJAX requests
+		$nonce = wp_create_nonce( 'mab_nonce_action' );
+
+		// Enqueue the main admin script (dependent on jQuery)
+		wp_enqueue_script( 'mab_script', MAB_PLUGIN_DIR . 'admin/js/admin.js', array( 'jquery' ), '1.0.0', true );
+
+		// Localize the script to pass AJAX URL and nonce to the JavaScript file
+		wp_localize_script( 'mab_script', 'mab_obj',
+			array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ), // The admin AJAX URL
+				'mab_nonce' => $nonce // The nonce for AJAX security
+			)
+		);
 
 	}
 
@@ -233,7 +231,7 @@ class MAB_Plugin {
 			'options-general.php',
 			__( 'Multisite Author Bio', 'multisite-author-bio' ),
 			__( 'Multisite Author Bio', 'multisite-author-bio' ),
-			'administrator',
+			'manage_network_options',
 			MAB_DIRNAME,
 			array( $this, 'mab_admin_page_settings' ),
 			100

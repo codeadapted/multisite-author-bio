@@ -40,24 +40,24 @@ class MAB_UserSetup {
 	 */
 	public function mab_user_screen_enqueue( $page ) {
 
-		// Only enqueue scripts and styles on the settings page
-        if ( strpos( mab()->plugin()->mab_get_current_admin_url(), mab()->plugin()->mab_get_admin_url() ) !== false ) {
-
-			// Enqueue custom stylesheet for user setup
-			wp_enqueue_style( 'mab_user_stylesheet', MAB_PLUGIN_DIR . 'admin/css/user-setup.css', array(), '1.0.0' );
-
-			// Enqueue the main admin script (dependent on jQuery)
-			wp_enqueue_script( 'mab_user_script', MAB_PLUGIN_DIR . 'admin/js/user-setup.js', array( 'jquery' ), '1.0.0', true );
-
-			// Localize the script to pass AJAX URL and nonce to the JavaScript file
-			wp_localize_script( 'mab_user_script', 'mab_user_obj',
-				array(
-					'ajax_url' => admin_url( 'admin-ajax.php' ), // The admin AJAX URL
-					'mab_nonce' => $nonce // The nonce for AJAX security
-				)
-			);
-
+		// Only enqueue scripts and styles on the profile edit page
+		if ( !in_array( $page, array( 'user-edit.php', 'profile.php' ) ) ) {
+			return;
 		}
+
+		// Enqueue custom stylesheet for user setup
+		wp_enqueue_style( 'mab_user_stylesheet', MAB_PLUGIN_DIR . 'admin/css/user-setup.css', array(), '1.0.0' );
+
+		// Enqueue the main admin script (dependent on jQuery)
+		wp_enqueue_script( 'mab_user_script', MAB_PLUGIN_DIR . 'admin/js/user-setup.js', array( 'jquery' ), '1.0.0', true );
+
+		// Localize the script to pass AJAX URL and nonce to the JavaScript file
+		wp_localize_script( 'mab_user_script', 'mab_user_obj',
+			array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ), // The admin AJAX URL
+				'mab_nonce' => $nonce // The nonce for AJAX security
+			)
+		);
 
 	}
 
@@ -70,20 +70,20 @@ class MAB_UserSetup {
 	 */
 	public function mab_get_bio_variation() {
 
-		// Validate the nonce
+		// Nonce verification happens in mab_validate_nonce()
         if ( ! mab()->plugin()->mab_validate_nonce() ) {
             return false;
         }
 
 		// Sanitize inputs
-		$site_name = sanitize_text_field( wp_slash( $_GET['site_name'] ) );
-		$user_id = absint( $_GET['user_id'] );
+		$site_name = isset( $_POST['site_name'] ) ? sanitize_text_field( wp_unslash( $_POST['site_name'] ) ) : '';
+		$user_id = isset( $_POST['user_id'] ) ? absint( $_POST['user_id'] ) : 0;
 
 		// Retrieve user meta for the selected site
 		$bio_variation = get_user_meta( $user_id, 'mab_profile_bio_' . $site_name, true );
 
 		// Send the bio variation via JSON if it exists, otherwise return false
-		if ( ! empty( $bio_variation ) ) {
+		if ( is_array( $bio_variation ) && ! empty( $bio_variation ) ) {
 			wp_send_json_success( $bio_variation );
 		} else {
 			wp_send_json_error( array( 'message' => __( 'No bio variation found.', 'multisite-author-bio' ) ) );
@@ -109,7 +109,7 @@ class MAB_UserSetup {
 		// Loop through each site and generate dropdown options
 		foreach ( $sites as $site ) {
 			if ( $site->blog_id != $main_site_id ) {
-				$site_slug = parse_url( $site->siteurl, PHP_URL_HOST ); // Get the site slug
+				$site_slug = wp_parse_url( $site->siteurl, PHP_URL_HOST ); // Get the site slug
 				if ( $site_slug ) {
 					$options .= '<option value="' . esc_html( $site_slug ) . '"' . selected( $current_site_id, $site->blog_id, false ) . '>' . strtoupper( esc_html( $site_slug ) ) . '</option>';
 				}
@@ -180,9 +180,14 @@ class MAB_UserSetup {
 			return false;
 		}
 
+		// Nonce verification happens in mab_validate_nonce()
+        if ( ! mab()->plugin()->mab_validate_nonce() ) {
+            return false;
+        }
+
 		// Save the bio variation for the selected site
-		$bio_variation = sanitize_text_field( wp_slash( $_POST['mabSelectBioVariation'] ) );
-		$bio_text = sanitize_textarea_field( wp_slash( $_POST['mabBioVariation'] ) );
+		$bio_variation = isset( $_POST['mabSelectBioVariation'] ) ? sanitize_text_field( wp_unslash( $_POST['mabSelectBioVariation'] ) ) : '';
+		$bio_text = isset( $_POST['mabBioVariation'] ) ? sanitize_textarea_field( wp_unslash( $_POST['mabBioVariation'] ) ) : '';
 
 		// Update user meta with the bio variation for the selected site
 		update_user_meta( $user_id, 'mab_profile_bio_' . $bio_variation, $bio_text );

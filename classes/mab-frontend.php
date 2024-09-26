@@ -50,7 +50,7 @@ class MAB_Frontend {
 	private function mab_get_current_site_slug() {
 
 		// Parse the URL and retrieve the hostname
-		$site_url = parse_url( home_url(), PHP_URL_HOST );
+		$site_url = wp_parse_url( home_url(), PHP_URL_HOST );
 
 		// Sanitize and return the site slug
 		return sanitize_text_field( $site_url );
