@@ -48,6 +48,9 @@ class MAB_UserSetup {
 		// Enqueue custom stylesheet for user setup
 		wp_enqueue_style( 'mab_user_stylesheet', MAB_PLUGIN_DIR . 'admin/css/user-setup.css', array(), '1.0.0' );
 
+		// Create a nonce for secure AJAX requests
+		$nonce = wp_create_nonce( 'mab_nonce_action' );
+
 		// Enqueue the main admin script (dependent on jQuery)
 		wp_enqueue_script( 'mab_user_script', MAB_PLUGIN_DIR . 'admin/js/user-setup.js', array( 'jquery' ), '1.0.0', true );
 
@@ -70,10 +73,8 @@ class MAB_UserSetup {
 	 */
 	public function mab_get_bio_variation() {
 
-		// Nonce verification happens in mab_validate_nonce()
-        if ( ! mab()->plugin()->mab_validate_nonce() ) {
-            return false;
-        }
+		// Nonce validation
+		check_ajax_referer( 'mab_nonce_action', 'mab_nonce' );
 
 		// Sanitize inputs
 		$site_name = isset( $_POST['site_name'] ) ? sanitize_text_field( wp_unslash( $_POST['site_name'] ) ) : '';
@@ -83,8 +84,8 @@ class MAB_UserSetup {
 		$bio_variation = get_user_meta( $user_id, 'mab_profile_bio_' . $site_name, true );
 
 		// Send the bio variation via JSON if it exists, otherwise return false
-		if ( is_array( $bio_variation ) && ! empty( $bio_variation ) ) {
-			wp_send_json_success( $bio_variation );
+		if ( $bio_variation ) {
+			wp_send_json_success( array( 'message' => $bio_variation ) );
 		} else {
 			wp_send_json_error( array( 'message' => __( 'No bio variation found.', 'multisite-author-bio' ) ) );
 		}
@@ -109,7 +110,8 @@ class MAB_UserSetup {
 		// Loop through each site and generate dropdown options
 		foreach ( $sites as $site ) {
 			if ( $site->blog_id != $main_site_id ) {
-				$site_slug = wp_parse_url( $site->siteurl, PHP_URL_HOST ); // Get the site slug
+				$site_slug = explode( '.', $site->siteurl )[0];
+				$site_slug = str_replace( array( 'http://', 'https://' ), '', $site_slug );
 				if ( $site_slug ) {
 					$options .= '<option value="' . esc_html( $site_slug ) . '"' . selected( $current_site_id, $site->blog_id, false ) . '>' . strtoupper( esc_html( $site_slug ) ) . '</option>';
 				}
@@ -128,9 +130,6 @@ class MAB_UserSetup {
 	 * @return  void
 	 */
 	public function mab_custom_user_profile_fields( $user ) {
-
-		// Load text domain for translations
-		mab()->plugin()->mab_load_plugin_textdomain();
 
 		// Get user id and sites
 		$user_id = absint( $user->ID );
@@ -176,14 +175,12 @@ class MAB_UserSetup {
 	public function mab_save_custom_user_profile_fields( $user_id ) {
 		
 		// Ensure only administrators can update this field
-		if ( ! current_user_can( 'manage_options' ) ) {
+		if ( ! current_user_can( 'manage_network_options' ) ) {
 			return false;
 		}
 
-		// Nonce verification happens in mab_validate_nonce()
-        if ( ! mab()->plugin()->mab_validate_nonce() ) {
-            return false;
-        }
+		// Nonce validation
+		check_ajax_referer( 'mab_nonce_action', 'mab_nonce' );
 
 		// Save the bio variation for the selected site
 		$bio_variation = isset( $_POST['mabSelectBioVariation'] ) ? sanitize_text_field( wp_unslash( $_POST['mabSelectBioVariation'] ) ) : '';

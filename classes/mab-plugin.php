@@ -77,6 +77,9 @@ class MAB_Plugin {
 		// Admin-specific hooks
 		if ( is_admin() ) {
 
+			// Load translations as early as possible.
+			add_action( 'plugins_loaded', array( $this, 'mab_load_plugin_textdomain' ) );
+
 			// Force the plugin to be network-activated only
 			add_filter( 'user_has_cap', array( $this, 'mab_force_network_activation' ), 10, 3 );
 
@@ -133,11 +136,8 @@ class MAB_Plugin {
 		// Nonce validation
 		check_ajax_referer( 'mab_nonce_action', 'mab_nonce' );
 
-		// Load text domain for translations
-		$this->mab_load_plugin_textdomain();
-
 		// Check if clear data set
-		$clear_data = isset( $_POST['clear_data'] ) ? sanitize_text_field( wp_unslash( $_POST['clear_data'] ) ) : 0;
+		$clear_data = isset( $_POST['clear_data'] ) ? sanitize_text_field( wp_unslash( $_POST['clear_data'] ) ) : false;
 
 		// Get main site id
 		$main_site_id = get_main_site_id();
@@ -228,7 +228,7 @@ class MAB_Plugin {
 	 */
 	public function mab_admin_page() {
 		add_submenu_page(
-			'options-general.php',
+			'settings.php',
 			__( 'Multisite Author Bio', 'multisite-author-bio' ),
 			__( 'Multisite Author Bio', 'multisite-author-bio' ),
 			'manage_network_options',
@@ -255,12 +255,24 @@ class MAB_Plugin {
 	 * @return  void
 	 */
 	public function mab_get_current_admin_url() {
+
+		// Get the current request URI
 		$uri = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-		$uri = preg_replace( '|^.*/wp-admin/|i', '', $uri );
-		if ( ! $uri ) {
+		
+		// Ensure there's a valid URI
+		if ( empty( $uri ) ) {
 			return '';
 		}
+		
+		// Sanitize and clean the URI
+		$uri = esc_url_raw( $uri );
+	
+		// Strip the path to ensure we're only working within the wp-admin area
+		$uri = preg_replace( '|^.*/wp-admin/|i', '', $uri );
+	
+		// Return the sanitized current admin URL, without _wpnonce
 		return remove_query_arg( array( '_wpnonce' ), admin_url( $uri ) );
+
 	}
 
 	/**
@@ -270,7 +282,7 @@ class MAB_Plugin {
 	 * @return  string the admin url
 	 */
 	public function mab_get_admin_url() {
-		return admin_url( 'options-general.php?page=' . MAB_BASENAME );
+		return network_admin_url( 'settings.php?page=' . MAB_BASENAME );
 	}
 
 	/**
@@ -299,39 +311,6 @@ class MAB_Plugin {
 
 		// Return capabilities object
 		return $allcaps;
-
-	}
-
-	/**
-	 * Validate the nonce for security.
-	 * Ensures that the nonce field exists and is valid.
-	 * 
-	 * @param string $action The nonce action name.
-	 * @param string $nonce_field The name of the nonce field.
-	 * @return bool|void False if the nonce is invalid or missing, true if valid.
-	 */
-	private function mab_validate_nonce( $action = 'mab_nonce_action', $nonce_field = 'mab_nonce' ) {
-
-		// Check if the nonce exists in $_GET
-		if ( isset( $_GET[ $nonce_field ] ) ) {
-
-			// Sanitize and unslash the nonce
-			$nonce = sanitize_text_field( wp_unslash( $_GET[ $nonce_field ] ) );
-
-			// Validate the nonce
-			if ( ! wp_verify_nonce( $nonce, $action ) ) {
-				wp_send_json_error( array( 'message' => 'Invalid nonce' ) );
-				return false;
-			}
-
-		} else {
-			// Nonce is missing
-			wp_send_json_error( array( 'message' => 'Nonce is missing' ) );
-			return false;
-		}
-
-		// If everything is correct, return true
-		return true;
 
 	}
 

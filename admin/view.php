@@ -22,7 +22,7 @@ if ( function_exists( 'restore_current_blog' ) ) {
 }
 
 // Load the plugin's text domain for translations.
-mab()->plugin()->mab_load_plugin_textdomain();
+//mab()->plugin()->mab_load_plugin_textdomain();
 
 ?>
 <div id="admin-view">

@@ -22,7 +22,7 @@
 		_$data.append( 'mab_nonce', nonce );
 
 		// If a value is selected, send a fetch request
-		if( val ) {
+		if( siteName ) {
 			try {
 	
 				// Send fetch request and wait for the response
@@ -38,7 +38,7 @@
 					const data = await response.json();
 					
 					// Update the textarea with the response data
-					bioTextarea.value = data.data || '';
+					bioTextarea.value = data.data.message || '';
 					bioTextarea.dispatchEvent( new Event( 'change' ) );
 					bioTextarea.classList.remove( 'hidden' );
 					bioLabel.classList.remove( 'hidden' );
