@@ -2,9 +2,10 @@
 /**
 * Plugin Name:  Multisite Author Bio
 * Description:  Allows you to add unique user biographical information for each Multisite instance.
-* Version:      1.0.2
+* Version:      1.0.3
 * Author:       CodeAdapted
 * Author URI:   https://codeadapted.com
+* Network:      true
 * License:      GPL2 or later
 * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
 * Text Domain:  multisite-author-bio
@@ -12,7 +13,7 @@
 *
 * @package     MultisiteAuthorBio
 * @author      CodeAdapted
-* @copyright   Copyright (c) 2022, CodeAdapted LLC
+* @copyright   Copyright (c) 2024, CodeAdapted LLC
 */
 
 if ( ! defined( 'ABSPATH' ) ) {

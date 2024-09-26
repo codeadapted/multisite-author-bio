@@ -3,232 +3,315 @@
 class MAB_Plugin {
 
 	/**
-	 * install
-	 *
-	 * Run installation functions.
+	 * Install the plugin.
+	 * Ensures activation happens only in Network Admin.
 	 *
 	 * @param   void
 	 * @return  void
 	 */
 	public static function install() {
 
-		update_option( 'mab_activated', true );
+		// Ensure activation happens only in Network Admin
+		if ( ! is_network_admin() ) {
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+
+			wp_die(
+				esc_html__( 'This plugin can only be activated from the Network Admin.', 'multisite-author-bio' ),
+				esc_html__( 'Plugin Activation Error', 'multisite-author-bio' ),
+				array( 'back_link' => true )
+			);
+		}
+
+		// Set mab_activated to true
+		update_option( sanitize_key( 'mab_activated' ), true );
 
 	}
 
 	/**
-	 * deactivate
-	 *
-	 * Run deactivation functions.
+	 * Deactivate the plugin.
 	 *
 	 * @param   void
 	 * @return  void
 	 */
 	public static function deactivate() {
 
-		delete_option( 'mab_activated' );
+		// Remove mab_activated option upon deactivation
+		delete_option( sanitize_key( 'mab_activated' ) );
 
 	}
 
 	/**
-	 * uninstall
-	 *
-	 * Run uninstall functions.
+	 * Uninstall the plugin and clear data if applicable.
 	 *
 	 * @param   void
 	 * @return  void
 	 */
 	public static function uninstall() {
 
-		if( sanitize_text_field( get_option( 'mab_clear_data' ) ) ) {
+		// Check if mab_clear_data option is enabled and clear the data
+		if( sanitize_text_field( get_option( sanitize_key( 'mab_clear_data' ) ) ) ) {
+
+			// Clear all data related to the plugin
 			self::mab_clear_data();
-			delete_option( 'mab_clear_data' );
+
+			// Delete the mab_clear_data option
+			delete_option( sanitize_key( 'mab_clear_data' ) );
+
 		}
 
 	}
 
 	/**
-	 * __construct
+	 * Constructor to initialize hooks.
 	 *
 	 * @param   void
 	 * @return  void
 	 */
 	public function __construct() {
 
+		// Register hooks for uninstall, deactivation, and activation
 		register_uninstall_hook( MAB_FILE, array( __CLASS__, 'uninstall' ) );
 		register_deactivation_hook( MAB_FILE, array( __CLASS__, 'deactivate' ) );
 		register_activation_hook( MAB_FILE, array( __CLASS__, 'install' ) );
 
+		// Admin-specific hooks
 		if ( is_admin() ) {
-			add_filter( 'plugin_action_links_' . MAB_BASENAME . '/multisite-author-bio.php', array( $this, 'add_settings_link' ) );
-			add_action( 'admin_init', array( $this, 'admin_init' ) );
-			add_action( 'admin_menu', array( $this, 'admin_page' ) );
+
+			// Load translations as early as possible.
+			add_action( 'plugins_loaded', array( $this, 'mab_load_plugin_textdomain' ) );
+
+			// Force the plugin to be network-activated only
+			add_filter( 'user_has_cap', array( $this, 'mab_force_network_activation' ), 10, 3 );
+
+			// Add a settings link to the plugin page
+			add_filter( 'network_admin_plugin_action_links_' . MAB_BASENAME . '/multisite-author-bio.php', array( $this, 'mab_add_settings_link' ) );
+
+			// Initialize admin scripts and styles
+			add_action( 'admin_enqueue_scripts', array( $this, 'mab_enqueue_scripts' ) );
+
+			// Add the admin page menu
+			add_action( 'network_admin_menu', array( $this, 'mab_admin_page' ) );
+
+			// Handle AJAX requests for saving the admin page settings
 			add_action( 'wp_ajax_mab_save_admin_page', array( $this, 'mab_save_admin_page' ) );
+
 		}
 
 	}
 
 	/**
-	 * mab_clear_data
-	 *
 	 * Clear translated user bio data.
 	 *
 	 * @param   void
 	 * @return  void
 	 */
-	public function mab_clear_data() {
+	private function mab_clear_data() {
 
+		// Get main site id
 		$main_site_id = get_main_site_id();
 
-		if( function_exists('is_multisite') && is_multisite() ) {
+		// Switch to main site if multisite
+		if ( function_exists( 'is_multisite' ) && is_multisite() && get_current_blog_id() != $main_site_id ) {
 			switch_to_blog( $main_site_id );
 		}
 
-		global $wpdb;
+		// Use delete_metadata instead of direct DB query
+		delete_metadata( 'user', 0, 'mab_profile_bio%', '', true );
 
-		$deleted_rows = $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE `meta_key` LIKE '%mab_profile_bio%'" );
-
-		restore_current_blog();
+		// Restore to the original blog
+		if ( function_exists( 'restore_current_blog' ) ) {
+			restore_current_blog();
+		}
 
 	}
 
 	/**
-	 * mab_save_admin_page
-	 *
-	 * Save admin page data
+	 * Save admin page settings.
 	 *
 	 * @param   void
 	 * @return  void
 	 */
-	 function mab_save_admin_page() {
+	public function mab_save_admin_page() {
 
-		mab()->plugin()->mab_load_plugin_textdomain();
+		// Nonce validation
+		check_ajax_referer( 'mab_nonce_action', 'mab_nonce' );
 
-		$clear_data = sanitize_text_field( $_POST['clear_data'] );
+		// Check if clear data set
+		$clear_data = isset( $_POST['clear_data'] ) ? sanitize_text_field( wp_unslash( $_POST['clear_data'] ) ) : false;
+
+		// Get main site id
 		$main_site_id = get_main_site_id();
 
-		if( function_exists('is_multisite') && is_multisite() ) {
+		// Switch to main site if multisite
+		if ( function_exists( 'is_multisite' ) && is_multisite() && get_current_blog_id() != $main_site_id ) {
 			switch_to_blog( $main_site_id );
 		}
 
-		if( $clear_data ) {
+		// Update or delete the clear_data option
+		if ( $clear_data ) {
 			update_option( 'mab_clear_data', true );
 		} else {
 			delete_option( 'mab_clear_data' );
 		}
 
-		restore_current_blog();
+		// Restore the original blog
+		if ( function_exists( 'restore_current_blog' ) ) {
+			restore_current_blog();
+		}
 
+		// Send json
 		wp_send_json_success( __( 'User bio variations set to be cleared on uninstall', 'multisite-author-bio' ) );
-	 }
+
+	}
 
 	/**
-	 * add_settings_link
-	 *
 	 * Add settings link on plugin page
 	 *
 	 * @param   array $links The links array.
 	 * @return  array The links array.
 	 */
-	public function add_settings_link( $links ) {
-		$links[] = '<a href="' . $this->get_admin_url() . '">' . __( 'Settings' ) . '</a>';
+	public function mab_add_settings_link( $links ) {
+
+		// Check if we're in multisite, and it's not in the network admin
+		if ( ! is_network_admin() && is_multisite() && plugin_basename( __FILE__ ) === $plugin_file ) {
+
+			// Remove the activate and deactivate links and return links
+			unset( $links['activate'] );
+			unset( $links['deactivate'] );
+			return $links;
+
+		}
+
+		// Add the settings link to the plugin's action links
+		$links[] = '<a href="' . $this->mab_get_admin_url() . '">' . __( 'Settings' ) . '</a>';
 		return $links;
+
 	}
 
 	/**
-	 * admin_init
-	 *
 	 * Register and enqueue admin stylesheet & scripts
 	 *
 	 * @param   void
 	 * @return  void
 	 */
-	public function admin_init() {
-		// only enqueue these things on the settings page
-		if ( $this->get_current_admin_url() == $this->get_admin_url() ) {
-			wp_register_style( 'mab_stylesheet', MAB_PLUGIN_DIR . 'admin/css/admin.css' );
-			wp_enqueue_style( 'mab_stylesheet' );
-			wp_register_script( 'mab_script', MAB_PLUGIN_DIR . 'admin/js/admin.js', array( 'jquery' ) );
-			wp_localize_script( 'mab_script', 'mab_obj',
-				array(
-					'ajax_url' => admin_url( 'admin-ajax.php' )
-				)
-			);
-			wp_enqueue_script( 'mab_script' );
+	public function mab_enqueue_scripts() {
+
+		// Only enqueue scripts and styles on the settings page
+		if ( strpos( $this->mab_get_current_admin_url(), $this->mab_get_admin_url() ) === false ) {
+			return;
 		}
+
+		// Enqueue custom stylesheet for user setup
+		wp_enqueue_style( 'mab_stylesheet', MAB_PLUGIN_DIR . 'admin/css/admin.css', array(), '1.0.0' );
+
+		// Create a nonce for secure AJAX requests
+		$nonce = wp_create_nonce( 'mab_nonce_action' );
+
+		// Enqueue the main admin script (dependent on jQuery)
+		wp_enqueue_script( 'mab_script', MAB_PLUGIN_DIR . 'admin/js/admin.js', array( 'jquery' ), '1.0.0', true );
+
+		// Localize the script to pass AJAX URL and nonce to the JavaScript file
+		wp_localize_script( 'mab_script', 'mab_obj',
+			array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ), // The admin AJAX URL
+				'mab_nonce' => $nonce // The nonce for AJAX security
+			)
+		);
+
 	}
 
 	/**
-	 * admin_page
-	 *
 	 * Register admin page and menu.
 	 *
 	 * @param   void
 	 * @return  void
 	 */
-	public function admin_page() {
+	public function mab_admin_page() {
 		add_submenu_page(
-			'options-general.php',
+			'settings.php',
 			__( 'Multisite Author Bio', 'multisite-author-bio' ),
 			__( 'Multisite Author Bio', 'multisite-author-bio' ),
-			'administrator',
+			'manage_network_options',
 			MAB_DIRNAME,
-			array( $this, 'admin_page_settings' ),
+			array( $this, 'mab_admin_page_settings' ),
 			100
 		);
 	}
 
 	/**
-	 * admin_page_settings
-	 *
 	 * Render admin view
 	 *
 	 * @param   void
 	 * @return  void
 	 */
-	public function admin_page_settings() {
+	public function mab_admin_page_settings() {
 		require_once MAB_DIRNAME . '/admin/view.php';
 	}
 
 	/**
-	 * get_current_admin_url
-	 *
 	 * Get the current admin url.
 	 *
 	 * @param   void
 	 * @return  void
 	 */
-	function get_current_admin_url() {
+	public function mab_get_current_admin_url() {
+
+		// Get the current request URI
 		$uri = isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
-		$uri = preg_replace( '|^.*/wp-admin/|i', '', $uri );
-		if ( ! $uri ) {
+		
+		// Ensure there's a valid URI
+		if ( empty( $uri ) ) {
 			return '';
 		}
+		
+		// Sanitize and clean the URI
+		$uri = esc_url_raw( $uri );
+	
+		// Strip the path to ensure we're only working within the wp-admin area
+		$uri = preg_replace( '|^.*/wp-admin/|i', '', $uri );
+	
+		// Return the sanitized current admin URL, without _wpnonce
 		return remove_query_arg( array( '_wpnonce' ), admin_url( $uri ) );
+
 	}
 
 	/**
-	 * get_admin_url
-	 *
 	 * Add settings link on plugin page
 	 *
 	 * @param   void
 	 * @return  string the admin url
 	 */
-	public function get_admin_url() {
-		return admin_url( 'options-general.php?page=' . MAB_BASENAME );
+	public function mab_get_admin_url() {
+		return network_admin_url( 'settings.php?page=' . MAB_BASENAME );
 	}
 
 	/**
-	 * mab_load_plugin_textdomain
-	 *
-	 * Add settings link on plugin page
-	 *
-	 * @param   void
-	 * @return  string the translation .mo file path
+	 * Load the plugin's text domain for translations.
+	 * Ensures the plugin is translatable by loading the correct language files.
 	 */
 	public function mab_load_plugin_textdomain() {
 		load_plugin_textdomain( 'multisite-author-bio', false, MAB_BASENAME . '/languages/' );
+	}
+
+	/**
+	 * Force the plugin to be activated network-wide only.
+	 * Prevents the plugin from being activated on individual sites in a multisite network.
+	 * 
+	 * @param array $allcaps The array of user capabilities.
+	 * @param array $cap The specific capability being checked.
+	 * @param array $args Additional arguments passed to the capability check.
+	 * @return array Modified array of capabilities, ensuring network activation only.
+	 */
+	public function mab_force_network_activation( $allcaps, $cap, $args ) {
+
+		// Prevent individual sites from activating the plugin
+		if ( isset( $args[0] ) && 'activate_plugin' === $args[0] && ! is_network_admin() && is_multisite() ) {
+			$allcaps[ $cap[0] ] = false;
+		}
+
+		// Return capabilities object
+		return $allcaps;
+
 	}
 
 }
