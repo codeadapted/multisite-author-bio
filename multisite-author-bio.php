@@ -29,7 +29,7 @@ if ( ! class_exists( 'MultisiteAuthorBio' ) ) :
 	class MultisiteAuthorBio {
 
 		/** @var string The plugin version number. */
-		var $version = '1.0.2';
+		var $version = '1.0.4';
 
 		/** @var string Shortcuts. */
 		var $plugin;
