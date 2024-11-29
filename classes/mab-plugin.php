@@ -183,7 +183,7 @@ class MAB_Plugin {
 		}
 
 		// Add the settings link to the plugin's action links
-		$links[] = '<a href="' . $this->mab_get_admin_url() . '">' . __( 'Settings' ) . '</a>';
+		$links[] = '<a href="' . $this->mab_get_admin_url() . '">' . __( 'Settings', 'multisite-author-bio' ) . '</a>';
 		return $links;
 
 	}

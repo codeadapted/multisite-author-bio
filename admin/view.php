@@ -2,7 +2,7 @@
 // Admin View Options Page for Multisite Author Bio Plugin
 
 if( !current_user_can( 'manage_options' ) ) {
-	wp_die( esc_html__( 'You do not have sufficient permissions to access this page.' ) );
+	wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'multisite-author-bio' ) );
 }
 
 // Get main site id
@@ -20,9 +20,6 @@ $clear_data = get_option( 'mab_clear_data' ) ? true : false;
 if ( function_exists( 'restore_current_blog' ) ) {
 	restore_current_blog();
 }
-
-// Load the plugin's text domain for translations.
-//mab()->plugin()->mab_load_plugin_textdomain();
 
 ?>
 <div id="admin-view">
@@ -56,7 +53,7 @@ if ( function_exists( 'restore_current_blog' ) ) {
 			</div>
 
 			<!-- Save Button -->
-			<input id="submitForm" class="button button-primary" name="submitForm" type="submit" value="<?php echo esc_html_e( 'Save Changes' ); ?>">
+			<input id="submitForm" class="button button-primary" name="submitForm" type="submit" value="<?php echo esc_html_e( 'Save Changes', 'multisite-author-bio' ); ?>">
 
 		</div>
 	</form>
