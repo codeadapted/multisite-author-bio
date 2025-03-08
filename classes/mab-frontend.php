@@ -49,12 +49,30 @@ class MAB_Frontend {
 	 */
 	private function mab_get_current_site_slug() {
 
-		// Parse the URL and retrieve the hostname
-		$site_url = wp_parse_url( home_url(), PHP_URL_HOST );
+		// Get the site URL and parse it using wp_parse_url for consistency with WordPress
+		$site_url = get_site_url();
+		$parsed_url = wp_parse_url( $site_url );
+		
+		$domain = isset( $parsed_url['host'] ) ? $parsed_url['host'] : '';
+		$path = isset( $parsed_url['path'] ) ? trim( $parsed_url['path'], '/' ) : '';
+	
+		if ( !empty( $path ) ) {
 
-		// Sanitize and return the site slug
-		return sanitize_text_field( $site_url );
+			// For path-based multisites (e.g., testsite.com/es)
+			$slug = sanitize_title( $path );
+
+		} else {
+
+			// For domain-based multisites (e.g., michaelbox.net or es.testsite.com)
+			$parts = explode( '.', $domain );
+			$slug = (count( $parts ) > 2) ? sanitize_title( $parts[0] ) : sanitize_title( $parts[0] );
+
+		}
+		
+		// Return the slug
+		return $slug;
 
 	}
+	
 
 }
