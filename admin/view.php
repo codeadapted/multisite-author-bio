@@ -26,7 +26,7 @@ if ( function_exists( 'restore_current_blog' ) ) {
 	<form id="mabForm" class="admin-view-form">
 
 		<!-- Page Title -->
-		<h1><?php echo esc_html_e( 'Multisite Author Bio', 'multisite-author-bio' ); ?></h1>
+		<h1><?php esc_html_e( 'Multisite Author Bio', 'multisite-author-bio' ); ?></h1>
 
 		<!-- Form Sections Wrapper -->
 		<div class="sections">
@@ -42,18 +42,18 @@ if ( function_exists( 'restore_current_blog' ) ) {
 
 					<!-- Label for Checkbox -->
 					<div class="label">
-						<label for="cleardata"><?php echo esc_html_e( 'Clear translation data on uninstall', 'multisite-author-bio' ); ?></label>
+						<label for="cleardata"><?php esc_html_e( 'Clear translation data on uninstall', 'multisite-author-bio' ); ?></label>
 					</div>
 
 					<!-- Description for Clear Data Option -->
 					<div class="desc">
-						<?php echo esc_html_e( 'Enabling this option will delete all the user meta data added by the plugin. It is highly advised to leave this unchecked if you plan to continue using this plugin.', 'multisite-author-bio' ); ?>
+						<?php esc_html_e( 'Enabling this option will delete all the user meta data added by the plugin. It is highly advised to leave this unchecked if you plan to continue using this plugin.', 'multisite-author-bio' ); ?>
 					</div>
 				</div>
 			</div>
 
 			<!-- Save Button -->
-			<input id="submitForm" class="button button-primary" name="submitForm" type="submit" value="<?php echo esc_html_e( 'Save Changes', 'multisite-author-bio' ); ?>">
+			<input id="submitForm" class="button button-primary" name="submitForm" type="submit" value="<?php esc_html_e( 'Save Changes', 'multisite-author-bio' ); ?>">
 
 		</div>
 	</form>
