@@ -70,6 +70,9 @@ No, this plugin is specifically built for WordPress Multisite environments. It w
 
 == Changelog ==
 
+= 1.1.1 =
+* Apply view.php patch
+
 = 1.1.0 =
 * Improved mab_get_current_site_slug() to correctly extract slugs for both domain-based and path-based multisite setups.
 * Ensured compatibility with multisite networks using unique domains.
