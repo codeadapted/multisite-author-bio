@@ -3,7 +3,7 @@ Contributors: CodeAdapted
 Tags: author, author bio, author description, multisite, multisite author
 Requires at least: 5.0
 Tested up to: 6.7.2
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,9 @@ Yes. By default, data is preserved when the plugin is uninstalled. However, you 
 No, this plugin is specifically built for WordPress Multisite environments. It will not provide functionality on a single-site installation.
 
 == Changelog ==
+
+= 1.1.1 =
+* Apply view.php patch
 
 = 1.1.0 =
 * Improved mab_get_current_site_slug() to correctly extract slugs for both domain-based and path-based multisite setups.

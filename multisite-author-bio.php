@@ -2,7 +2,7 @@
 /**
 * Plugin Name:  Multisite Author Bio
 * Description:  Allows you to add unique user biographical information for each Multisite instance.
-* Version:      1.1.0
+* Version:      1.1.1
 * Author:       CodeAdapted
 * Author URI:   https://codeadapted.com
 * Network:      true
@@ -29,7 +29,7 @@ if ( ! class_exists( 'MultisiteAuthorBio' ) ) :
 	class MultisiteAuthorBio {
 
 		/** @var string The plugin version number. */
-		var $version = '1.1.0';
+		var $version = '1.1.1';
 
 		/** @var string Shortcuts. */
 		var $plugin;
