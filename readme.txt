@@ -11,7 +11,7 @@ Multisite Author Bio allows you to easily manage unique user biographical inform
 
 == Description ==
 
-Multisite Author Bio simplifies managing unique user biographical information across multiple sites in a WordPress Multisite network. This plugin allows administrators to update author bios from a single user edit page, streamlining the process of managing bio variations across different sites without having to switch between site dashboards.
+Multisite Author Bio simplifies managing unique user biographical information across multiple sites in a WordPress Multisite network. This plugin allows administrators and editors to update author bios from a single user edit page, streamlining the process of managing bio variations across different sites without having to switch between site dashboards.
 
 = Features =
 
