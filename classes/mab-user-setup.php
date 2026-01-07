@@ -80,6 +80,12 @@ class MAB_UserSetup {
 		$site_name = isset( $_POST['site_name'] ) ? sanitize_text_field( wp_unslash( $_POST['site_name'] ) ) : '';
 		$user_id = isset( $_POST['user_id'] ) ? absint( $_POST['user_id'] ) : 0;
 
+		// Authorization check - ensure current user can edit the target user
+		if ( ! current_user_can( 'edit_user', $user_id ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to access this user\'s data.', 'multisite-author-bio' ) ) );
+			return;
+		}
+
 		// Retrieve user meta for the selected site
 		$bio_variation = get_user_meta( $user_id, 'mab_profile_bio_' . $site_name, true );
 
@@ -110,16 +116,42 @@ class MAB_UserSetup {
 		// Loop through each site and generate dropdown options
 		foreach ( $sites as $site ) {
 			if ( $site->blog_id != $main_site_id ) {
-				$site_slug = explode( '.', $site->siteurl )[0];
-				$site_slug = str_replace( array( 'http://', 'https://' ), '', $site_slug );
+				$site_slug = $this->mab_get_site_slug_from_url( $site->siteurl );
 				if ( $site_slug ) {
-					$options .= '<option value="' . esc_html( $site_slug ) . '"' . selected( $current_site_id, $site->blog_id, false ) . '>' . strtoupper( esc_html( $site_slug ) ) . '</option>';
+					$options .= '<option value="' . esc_attr( $site_slug ) . '"' . selected( $current_site_id, $site->blog_id, false ) . '>' . strtoupper( esc_html( $site_slug ) ) . '</option>';
 				}
 			}
 		}
 
 		// Return
 		return ! empty( $options ) ? $options : false;
+
+	}
+
+	/**
+	 * Extract the site slug from a site URL.
+	 * Handles both subdomain and subdirectory multisite configurations.
+	 *
+	 * @param   string $site_url The site URL to parse.
+	 * @return  string The sanitized site slug.
+	 */
+	private function mab_get_site_slug_from_url( $site_url ) {
+
+		$parsed_url = wp_parse_url( $site_url );
+		
+		$domain = isset( $parsed_url['host'] ) ? $parsed_url['host'] : '';
+		$path = isset( $parsed_url['path'] ) ? trim( $parsed_url['path'], '/' ) : '';
+
+		if ( ! empty( $path ) ) {
+			// For path-based multisites (e.g., example.com/es)
+			$slug = sanitize_title( $path );
+		} else {
+			// For domain-based multisites (e.g., es.example.com)
+			$parts = explode( '.', $domain );
+			$slug = ( count( $parts ) > 2 ) ? sanitize_title( $parts[0] ) : sanitize_title( $parts[0] );
+		}
+
+		return $slug;
 
 	}
 
@@ -178,8 +210,8 @@ class MAB_UserSetup {
 	 */
 	public function mab_save_custom_user_profile_fields( $user_id ) {
 		
-		// Ensure only administrators can update this field
-		if ( ! current_user_can( 'manage_network_options' ) ) {
+		// Ensure the current user can edit this user's profile
+		if ( ! current_user_can( 'edit_user', $user_id ) ) {
 			return false;
 		}
 
